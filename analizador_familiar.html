@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis Sistémico Familiar</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1814;
+  --ink-2: #4a4640;
+  --ink-3: #8a8580;
+  --border: #e8e4de;
+  --surface: #faf8f5;
+  --surface-2: #f2ede6;
+  --accent: #2d5a4a;
+  --accent-light: #e8f0ed;
+  --accent-2: #8b4a2a;
+  --accent-2-light: #f5ede8;
+  --gold: #c4963a;
+  --gold-light: #faf3e4;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 3rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  background: white;
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.logo span { color: var(--accent); font-style: italic; }
+.tagline {
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+.step-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 1rem;
+}
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin-bottom: 1.5rem;
+}
+.tab-row {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.tab {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  font-size: 13px;
+  font-weight: 500;
+  background: white;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-3);
+  transition: all 0.15s;
+  border-right: 1px solid var(--border);
+  font-family: 'DM Sans', sans-serif;
+}
+.tab:last-child { border-right: none; }
+.tab.active { background: var(--accent); color: white; }
+.tab:hover:not(.active) { background: var(--surface-2); color: var(--ink); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.field-group { margin-bottom: 1.25rem; }
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-2);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  background: var(--surface);
+  transition: border-color 0.15s;
+  outline: none;
+}
+input[type="text"]:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  background: white;
+}
+textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 2.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface);
+}
+.upload-zone:hover { border-color: var(--accent); background: var(--accent-light); }
+.upload-zone.has-file { border-color: var(--accent); background: var(--accent-light); border-style: solid; }
+.upload-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.upload-text { font-size: 14px; color: var(--ink-2); }
+.upload-sub { font-size: 12px; color: var(--ink-3); margin-top: 0.25rem; }
+#file-input { display: none; }
+.analyze-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+  margin-top: 0.5rem;
+}
+.analyze-btn:hover { background: #1e3f34; }
+.analyze-btn:disabled { background: var(--ink-3); cursor: not-allowed; }
+.loading {
+  display: none;
+  text-align: center;
+  padding: 3rem;
+}
+.loading.active { display: block; }
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: var(--ink-2);
+  font-style: italic;
+}
+.loading-sub { font-size: 12px; color: var(--ink-3); margin-top: 0.5rem; }
+#results { display: none; }
+#results.active { display: block; }
+.results-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.results-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.8rem;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.new-btn {
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 13px;
+  background: white;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink-2);
+  transition: all 0.15s;
+}
+.new-btn:hover { background: var(--surface-2); }
+.result-section {
+  margin-bottom: 1.5rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.result-section-header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.result-section-header:hover { background: var(--surface); }
+.result-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.result-section-title {
+  font-weight: 500;
+  font-size: 14px;
+  flex: 1;
+}
+.result-section-body {
+  padding: 1.5rem;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.result-section-body.collapsed { display: none; }
+.chevron {
+  font-size: 12px;
+  color: var(--ink-3);
+  transition: transform 0.2s;
+}
+.chevron.open { transform: rotate(180deg); }
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+.tag {
+  font-size: 12px;
+  padding: 0.3rem 0.75rem;
+  border-radius: 99px;
+  font-weight: 500;
+}
+.tag-green { background: var(--accent-light); color: var(--accent); }
+.tag-amber { background: var(--gold-light); color: #7a5a1a; }
+.tag-red { background: var(--accent-2-light); color: var(--accent-2); }
+.diagnostic-badge {
+  display: inline-block;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: var(--accent);
+  font-style: italic;
+  padding: 0.5rem 1rem;
+  background: var(--accent-light);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+.hipotesis-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.8;
+  border-left: 3px solid var(--accent);
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+.pregunta-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 0.75rem;
+}
+.pregunta-item:last-child { border-bottom: none; }
+.pregunta-num {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-3);
+  min-width: 24px;
+  padding-top: 0.1rem;
+}
+.intervencion-item {
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--surface);
+  margin-bottom: 0.5rem;
+}
+.intervencion-nombre {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+.intervencion-razon { font-size: 13px; color: var(--ink-3); }
+.acceso-item {
+  padding: 0.75rem;
+  border-left: 3px solid var(--gold);
+  background: var(--gold-light);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 0.5rem;
+}
+.acceso-titulo { font-weight: 500; font-size: 13px; color: #7a5a1a; margin-bottom: 0.2rem; }
+.acceso-desc { font-size: 13px; color: var(--ink-2); }
+.error-box {
+  background: var(--accent-2-light);
+  border: 1px solid #deb8a0;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-size: 13px;
+  color: var(--accent-2);
+  margin-top: 1rem;
+  display: none;
+}
+.api-notice {
+  background: var(--gold-light);
+  border: 1px solid #e8d098;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 12px;
+  color: #7a5a1a;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Sistema<span>Familiar</span></div>
+  <div class="tagline">Análisis clínico sistémico · Modelo integrador</div>
+</header>
+
+<main>
+  <div id="form-view">
+    <div class="step-label">Paso 1 — Contexto de la sesión</div>
+    <div class="card">
+      <div class="card-title">Información clínica</div>
+      <div class="card-desc">Datos que orientan el análisis sistémico</div>
+      <div class="row-3">
+        <div class="field-group">
+          <label>Motivo de consulta</label>
+          <input type="text" id="motivo" placeholder="Ej: conflicto padre-hijo adolescente">
+        </div>
+        <div class="field-group">
+          <label>Etapa del ciclo vital</label>
+          <select id="ciclo">
+            <option value="">Seleccionar...</option>
+            <option>Pareja sin hijos</option>
+            <option>Familia con hijos pequeños</option>
+            <option>Familia con hijos escolares</option>
+            <option>Familia con adolescentes</option>
+            <option>Nido vacío / lanzamiento</option>
+            <option>Familia en vejez</option>
+            <option>Familia reconstituida</option>
+            <option>Familia monoparental</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>N.° de sesión</label>
+          <input type="text" id="sesion" placeholder="Ej: 3">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Integrantes presentes en sesión</label>
+        <input type="text" id="integrantes" placeholder="Ej: Madre (45), Padre (47), Hijo identificado (16), Hija (13)">
+      </div>
+      <div class="field-group">
+        <label>Intentos de solución previos / historia relevante</label>
+        <textarea id="historia" placeholder="Ej: Consulta anterior con psicólogo individual sin resultados, separación hace 2 años, abuela materna muy presente..."></textarea>
+      </div>
+    </div>
+
+    <div class="step-label">Paso 2 — Transcripción de la sesión</div>
+    <div class="card">
+      <div class="card-title">Material clínico</div>
+      <div class="card-desc">Ingresa la transcripción o sube el audio de la sesión</div>
+
+      <div class="tab-row">
+        <button class="tab active" onclick="switchTab('manual')">Transcripción manual</button>
+        <button class="tab" onclick="switchTab('audio')">Subir audio</button>
+      </div>
+
+      <div id="tab-manual" class="tab-content active">
+        <div class="field-group">
+          <label>Transcripción etiquetada por hablante</label>
+          <textarea id="transcripcion" style="min-height:220px" placeholder="[Madre] Cuando él llega tarde yo no sé qué hacer, me desespero...
+[Padre] Siempre exageras, tampoco es para tanto.
+[Terapeuta] ¿Y tú qué sientes cuando ves esa escena, Ana?
+[Hija] Yo prefiero no meterme...
+
+Etiqueta cada intervención con [Nombre del hablante] al inicio."></textarea>
+        </div>
+      </div>
+
+      <div id="tab-audio" class="tab-content">
+        <div class="api-notice">
+          ⚠ La transcripción automática con diarización requiere una API key de AssemblyAI o Deepgram. Por ahora puedes pegar la transcripción manualmente.
+        </div>
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+          <div class="upload-icon">🎙</div>
+          <div class="upload-text">Arrastra el audio aquí o haz clic para seleccionar</div>
+          <div class="upload-sub">MP3, WAV, M4A — máx. 500MB</div>
+        </div>
+        <input type="file" id="file-input" accept=".mp3,.wav,.m4a" onchange="handleFile(this)">
+        <div id="file-name" style="font-size:13px;color:var(--accent);margin-top:0.75rem;display:none;"></div>
+        <div style="margin-top:1rem;">
+          <label>AssemblyAI API Key (opcional)</label>
+          <input type="text" id="assembly-key" placeholder="Tu API key de AssemblyAI...">
+        </div>
+      </div>
+
+      <div id="error-msg" class="error-box"></div>
+      <button class="analyze-btn" onclick="analizar()">Generar análisis sistémico →</button>
+    </div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Analizando sistema familiar...</div>
+    <div class="loading-sub">Construyendo hipótesis relacional · identificando patrones · seleccionando intervenciones</div>
+  </div>
+
+  <div id="results">
+    <div class="results-header">
+      <div class="results-title">Análisis sistémico</div>
+      <button class="new-btn" onclick="resetForm()">← Nueva sesión</button>
+    </div>
+
+    <div class="result-section" id="sec-diagnostico">
+      <div class="result-section-header" onclick="toggleSection('diagnostico')">
+        <div class="result-icon" style="background:#e8f0ed;">🔍</div>
+        <div class="result-section-title">Diagnóstico del tipo de familia</div>
+        <div class="chevron open" id="chev-diagnostico">▼</div>
+      </div>
+      <div class="result-section-body" id="body-diagnostico"></div>
+    </div>
+
+    <div class="result-section" id="sec-hipotesis">
+      <div class="result-section-header" onclick="toggleSection('hipotesis')">
+        <div class="result-icon" style="background:#faf3e4;">🔄</div>
+        <div class="result-section-title">Hipótesis circular relacional</div>
+        <div class="chevron open" id="chev-hipotesis">▼</div>
+      </div>
+      <div class="result-section-body" id="body-hipotesis"></div>
+    </div>
+
+    <div class="result-section" id="sec-accesos">
+      <div class="result-section-header" onclick="toggleSection('accesos')">
+        <div class="result-icon" style="background:#f5ede8;">🎯</div>
+        <div class="result-section-title">Puntos de acceso para intervenir</div>
+        <div class="chevron open" id="chev-accesos">▼</div>
+      </div>
+      <div class="result-section-body" id="body-accesos"></div>
+    </div>
+
+    <div class="result-section" id="sec-intervenciones">
+      <div class="result-section-header" onclick="toggleSection('intervenciones')">
+        <div class="result-icon" style="background:#eeedfe;">🛠</div>
+        <div class="result-section-title">Intervenciones sugeridas</div>
+        <div class="chevron open" id="chev-intervenciones">▼</div>
+      </div>
+      <div class="result-section-body" id="body-intervenciones"></div>
+    </div>
+
+    <div class="result-section" id="sec-cambio">
+      <div class="result-section-header" onclick="toggleSection('cambio')">
+        <div class="result-icon" style="background:#e1f5ee;">🌱</div>
+        <div class="result-section-title">Puntos de acceso al cambio</div>
+        <div class="chevron open" id="chev-cambio">▼</div>
+      </div>
+      <div class="result-section-body" id="body-cambio"></div>
+    </div>
+
+    <div class="result-section" id="sec-preguntas">
+      <div class="result-section-header" onclick="toggleSection('preguntas')">
+        <div class="result-icon" style="background:#faeeda;">💬</div>
+        <div class="result-section-title">Preguntas circulares sugeridas</div>
+        <div class="chevron open" id="chev-preguntas">▼</div>
+      </div>
+      <div class="result-section-body" id="body-preguntas"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+const SYSTEM_PROMPT = `Eres un analista clínico experto en terapia sistémica familiar con modelo integrador (Minuchin, Escuela de Milán, MRI, narrativa, apego).
+
+Tu tarea es analizar la transcripción de una sesión familiar y producir un reporte clínico estructurado en JSON.
+
+TAXONOMÍA DE TIPOS DE FAMILIA (Modelo Circunflejo de Olson):
+COHESIÓN: Desligada | Separada | Conectada | Aglutinada
+FLEXIBILIDAD: Rígida | Estructurada | Flexible | Caótica
+Cada eje tiene indicadores lingüísticos observables: pronombres (yo/nosotros/ausencia), quién habla por quién, interrupciones, narrativas compartidas, absolutos, negociación, metacomunicación.
+
+FORMATO DE HIPÓTESIS RELACIONAL (usa este formato exacto):
+"El síntoma de __ podría entenderse como una forma de regulación relacional dentro de una familia caracterizada por __. Frente a __, el sistema tendería a organizarse mediante __, dificultando __ y favoreciendo __."
+También incluye patrones vinculares secundarios (aglutinación, triangulación, desplazamiento, etc.) y función relacional del síntoma.
+
+CATÁLOGO DE INTERVENCIONES DISPONIBLES:
+Evaluación: preguntas circulares, preguntas reflexivas, preguntas hipotéticas, genograma, observación de secuencias
+Estructurales: joining, reencuadre, escenificación, reestructuración de límites, fortalecimiento jerárquico parental
+Estratégicas: prescripción del síntoma, intervenciones paradójicas, restricción, tareas para el hogar
+Milanesas: neutralidad, connotación positiva, hipotetización, circularidad
+Narrativas: externalización, deconstrucción, reautoría, búsqueda de excepciones
+Relacionales: validación emocional, mentalización familiar, metacomunicación, clarificación de afectos
+Apego: reparación de rupturas, base segura, regulación diádica
+Transgeneracionales: lealtades invisibles, repeticiones, duelos no resueltos
+
+PUNTOS DE ACCESO PARA INTERVENIR: nodos del sistema donde el terapeuta puede entrar — quién tiene más apertura, qué secuencia es más visible, qué síntoma o miembro es más accesible como puerta de entrada.
+
+PUNTOS DE ACCESO AL CAMBIO: recursos, motivaciones o fisuras del sistema que ya están moviéndose o tienen potencial de movimiento — recursos latentes, miembros motivados, momentos de duda o quiebre del patrón.
+
+Responde ÚNICAMENTE con un objeto JSON válido con esta estructura exacta, sin texto adicional, sin markdown:
+{
+  "diagnostico": {
+    "cohesion": "tipo",
+    "flexibilidad": "tipo",
+    "descripcion": "párrafo explicativo observando indicadores lingüísticos concretos de la transcripción",
+    "indicadores_observados": ["indicador 1 con cita textual", "indicador 2 con cita textual", "indicador 3"]
+  },
+  "hipotesis": {
+    "central": "hipótesis en el formato indicado",
+    "patrones_secundarios": ["patrón 1", "patrón 2", "patrón 3"],
+    "funcion_sintoma": "descripción de la función relacional del síntoma"
+  },
+  "accesos_intervenir": [
+    {"titulo": "nombre del punto de acceso", "descripcion": "por qué y cómo entrar por aquí"},
+    {"titulo": "...", "descripcion": "..."},
+    {"titulo": "...", "descripcion": "..."}
+  ],
+  "intervenciones": [
+    {"nombre": "nombre de la intervención", "tipo": "categoría", "justificacion": "por qué en este sistema", "momento": "cuándo aplicarla"},
+    {"nombre": "...", "tipo": "...", "justificacion": "...", "momento": "..."},
+    {"nombre": "...", "tipo": "...", "justificacion": "...", "momento": "..."},
+    {"nombre": "...", "tipo": "...", "justificacion": "...", "momento": "..."}
+  ],
+  "accesos_cambio": [
+    {"titulo": "recurso o fisura", "descripcion": "cómo aprovecharlo terapéuticamente"},
+    {"titulo": "...", "descripcion": "..."},
+    {"titulo": "...", "descripcion": "..."}
+  ],
+  "preguntas_circulares": [
+    {"eje": "tema o eje relacional", "pregunta": "pregunta circular formulada"},
+    {"eje": "...", "pregunta": "..."},
+    {"eje": "...", "pregunta": "..."},
+    {"eje": "...", "pregunta": "..."},
+    {"eje": "...", "pregunta": "..."}
+  ]
+}`;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='manual')||(i===1&&tab==='audio')));
+  document.getElementById('tab-manual').classList.toggle('active', tab==='manual');
+  document.getElementById('tab-audio').classList.toggle('active', tab==='audio');
+}
+
+function handleFile(input) {
+  if (input.files[0]) {
+    const zone = document.getElementById('upload-zone');
+    const name = document.getElementById('file-name');
+    zone.classList.add('has-file');
+    zone.querySelector('.upload-text').textContent = '✓ Archivo seleccionado';
+    name.textContent = input.files[0].name;
+    name.style.display = 'block';
+  }
+}
+
+function toggleSection(id) {
+  const body = document.getElementById('body-'+id);
+  const chev = document.getElementById('chev-'+id);
+  body.classList.toggle('collapsed');
+  chev.classList.toggle('open');
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function resetForm() {
+  document.getElementById('form-view').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('error-msg').style.display = 'none';
+}
+
+async function analizar() {
+  const motivo = document.getElementById('motivo').value.trim();
+  const transcripcion = document.getElementById('transcripcion').value.trim();
+  const ciclo = document.getElementById('ciclo').value;
+  const integrantes = document.getElementById('integrantes').value.trim();
+  const historia = document.getElementById('historia').value.trim();
+  const sesion = document.getElementById('sesion').value.trim();
+
+  document.getElementById('error-msg').style.display = 'none';
+
+  if (!transcripcion || transcripcion.length < 50) {
+    showError('Por favor ingresa la transcripción de la sesión (mínimo 50 caracteres).');
+    return;
+  }
+
+  const contexto = [
+    motivo ? `Motivo de consulta: ${motivo}` : '',
+    ciclo ? `Etapa del ciclo vital: ${ciclo}` : '',
+    sesion ? `Sesión n.° ${sesion}` : '',
+    integrantes ? `Integrantes presentes: ${integrantes}` : '',
+    historia ? `Historia relevante: ${historia}` : ''
+  ].filter(Boolean).join('\n');
+
+  const userMessage = `CONTEXTO CLÍNICO:\n${contexto}\n\nTRANSCRIPCIÓN DE LA SESIÓN:\n${transcripcion}`;
+
+  document.getElementById('form-view').style.display = 'none';
+  document.getElementById('loading').classList.add('active');
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content.map(b => b.text || '').join('');
+    const clean = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+    renderResults(result);
+  } catch(e) {
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('form-view').style.display = 'block';
+    showError('Error al procesar el análisis. Verifica tu conexión e inténtalo nuevamente. Detalle: ' + e.message);
+  }
+}
+
+function renderResults(r) {
+  document.getElementById('loading').classList.remove('active');
+
+  // Diagnóstico
+  const d = r.diagnostico;
+  document.getElementById('body-diagnostico').innerHTML = `
+    <div style="display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <div style="padding:0.5rem 1rem;background:var(--accent-light);border-radius:8px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:500;margin-bottom:2px;">COHESIÓN</div>
+        <div style="font-size:16px;font-family:'DM Serif Display',serif;color:var(--accent);">${d.cohesion}</div>
+      </div>
+      <div style="padding:0.5rem 1rem;background:var(--gold-light);border-radius:8px;">
+        <div style="font-size:11px;color:#7a5a1a;font-weight:500;margin-bottom:2px;">FLEXIBILIDAD</div>
+        <div style="font-size:16px;font-family:'DM Serif Display',serif;color:#7a5a1a;">${d.flexibilidad}</div>
+      </div>
+    </div>
+    <p style="margin-bottom:1rem;">${d.descripcion}</p>
+    <div style="font-size:12px;font-weight:500;color:var(--ink-3);margin-bottom:0.5rem;letter-spacing:0.04em;">INDICADORES OBSERVADOS EN TRANSCRIPCIÓN</div>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:0.4rem;">
+      ${d.indicadores_observados.map(i => `<li style="font-size:13px;padding:0.5rem 0.75rem;background:var(--surface);border-radius:6px;color:var(--ink-2);">· ${i}</li>`).join('')}
+    </ul>`;
+
+  // Hipótesis
+  const h = r.hipotesis;
+  document.getElementById('body-hipotesis').innerHTML = `
+    <div class="hipotesis-text">${h.central}</div>
+    <div style="font-size:12px;font-weight:500;color:var(--ink-3);margin-bottom:0.5rem;margin-top:1rem;letter-spacing:0.04em;">PATRONES VINCULARES SECUNDARIOS</div>
+    <div class="tag-row">${h.patrones_secundarios.map(p => `<span class="tag tag-amber">${p}</span>`).join('')}</div>
+    <div style="margin-top:1rem;padding:0.75rem;background:var(--surface-2);border-radius:8px;">
+      <div style="font-size:11px;font-weight:500;color:var(--ink-3);margin-bottom:0.4rem;">FUNCIÓN RELACIONAL DEL SÍNTOMA</div>
+      <div style="font-size:13px;color:var(--ink-2);">${h.funcion_sintoma}</div>
+    </div>`;
+
+  // Accesos para intervenir
+  const ai = r.accesos_intervenir;
+  document.getElementById('body-accesos').innerHTML = ai.map(a => `
+    <div class="acceso-item" style="border-left-color:var(--accent);">
+      <div class="acceso-titulo" style="color:var(--accent);">${a.titulo}</div>
+      <div class="acceso-desc">${a.descripcion}</div>
+    </div>`).join('');
+
+  // Intervenciones
+  const iv = r.intervenciones;
+  document.getElementById('body-intervenciones').innerHTML = iv.map(i => `
+    <div class="intervencion-item">
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;">
+        <div class="intervencion-nombre">${i.nombre}</div>
+        <span class="tag tag-green" style="font-size:11px;">${i.tipo}</span>
+      </div>
+      <div class="intervencion-razon">${i.justificacion}</div>
+      <div style="font-size:12px;color:var(--gold);margin-top:0.25rem;font-weight:500;">⏱ ${i.momento}</div>
+    </div>`).join('');
+
+  // Accesos al cambio
+  const ac = r.accesos_cambio;
+  document.getElementById('body-cambio').innerHTML = ac.map(a => `
+    <div class="acceso-item">
+      <div class="acceso-titulo">${a.titulo}</div>
+      <div class="acceso-desc">${a.descripcion}</div>
+    </div>`).join('');
+
+  // Preguntas circulares
+  const pq = r.preguntas_circulares;
+  document.getElementById('body-preguntas').innerHTML = `<div>${pq.map((p,i) => `
+    <div class="pregunta-item">
+      <div class="pregunta-num">${i+1}</div>
+      <div>
+        <div style="font-size:11px;font-weight:500;color:var(--gold);margin-bottom:0.2rem;text-transform:uppercase;letter-spacing:0.04em;">${p.eje}</div>
+        <div style="font-size:14px;font-style:italic;color:var(--ink-2);">${p.pregunta}</div>
+      </div>
+    </div>`).join('')}</div>`;
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
