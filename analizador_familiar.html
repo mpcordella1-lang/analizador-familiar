@@ -658,8 +658,7 @@ async function analizar() {
 
     const data = await response.json();
     const text = data.content ? data.content.map(b => b.text || '').join('') : (data.error ? data.error.message : 'Error desconocido');
-    const clean = text.replace(/```json|```/g, '').trim();
-    const result = JSON.parse(clean);
+    const result = text;
     renderResults(result);
   } catch(e) {
     document.getElementById('loading').classList.remove('active');
