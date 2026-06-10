@@ -656,7 +656,9 @@ async function analizar() {
       })
     });
 
-    const data = await response.json();
+const rawText = await response.text();
+console.log('Respuesta raw:', rawText);
+const data = JSON.parse(rawText);
     const text = data.content ? data.content.map(b => b.text || '').join('') : (data.error ? data.error.message : 'Error desconocido');
     const result = text;
     renderResults(result);
